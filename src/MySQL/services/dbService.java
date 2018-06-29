@@ -30,7 +30,7 @@ public class dbService {
 
         // Setup the connection
         connection = DriverManager.getConnection("jdbc:mysql://localhost/ECommerce?" +
-                "user=root&password=trisana28&useSSL=false&serverTimezone=UTC&characterEncoding=utf8");
+                "user=root&password=*********&useSSL=false&serverTimezone=UTC&characterEncoding=utf8");
 
         // This is used to execute queries
         statement = connection.createStatement();
