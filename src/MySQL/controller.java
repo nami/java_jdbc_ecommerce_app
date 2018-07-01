@@ -8,6 +8,10 @@ import java.util.Scanner;
 
 public class controller {
 
+    /**
+     * main() to start ECommerce
+     * @param args
+     */
     public static void main(String[] args) {
         controller c = new controller();
         c.userMenu();
@@ -15,18 +19,30 @@ public class controller {
     }
 
     public void userMenu() {
+        // instantiate user_input variable to hold user input
         int user_input = 0;
         Scanner sc = new Scanner(System.in);
+        // print the menu for user to choose from
         printMenu();
 
+        /**
+         * Constructor to instantiate required service classes
+         */
         product_access p = new product_access();
         platform_access pl = new platform_access();
         prices_products_platforms_access ppp = new prices_products_platforms_access();
 
+        /**
+         * primary controller method for ECommerce application - uses do while loop to take commands from user based on
+         * menu that is printed within each loop until user enters -1 to quite the program
+         */
         try {
+            // do while loop to continously prompt for next action
             do {
+                // get the user selection
                 user_input = sc.nextInt();
 
+                // determine user selection using switch statement and act accordingly
                 switch (user_input) {
                     case 0:
                         printMenu();
@@ -58,27 +74,43 @@ public class controller {
                         System.out.println("メニューを表示には「０」を入力ください。");
                         break;
                     case 7 : platform_access.upPlatforms();
+                        System.out.println("プラトフォムを変更されました。");
+                        System.out.println("メニューを表示には「０」を入力ください。");
                         break;
                     case 8 : pl.deletePlatform();
+                        System.out.println("プラトフォムを削除されました。");
+                        System.out.println("メニューを表示には「０」を入力ください。");
                         break;
                     case 9 : ppp.newRecord();
+                        System.out.println("新しいレコードを。");
+                        System.out.println("メニューを表示には「０」を入力ください。");
                         break;
                     case 10 : ppp.listRecords();
+                        System.out.println("レコードのリストを表示されました。");
+                        System.out.println("メニューを表示には「０」を入力ください。");
                         break;
                     case 11 : ppp.upRecord();
+                        System.out.println("レコードを変更されました。");
+                        System.out.println("メニューを表示には「０」を入力ください。");
                         break;
                     case 12 : ppp.deleteRecord();
+                        System.out.println("レコードを削除されました。");
+                        System.out.println("メニューを表示には「０」を入力ください。");
                         break;
                     case 13 :
                         System.out.println("ご利用頂きまして、誠にありがとうございました。");
                         return;
                 }
+                // continue while user does not enter -1
             } while (user_input != -1);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Method that prints menu options for the user
+     */
     public void printMenu(){
         System.out.println("ECommerceのメニュ - 番号をご入力ください");
         System.out.println("1. 新しい製品をご入力");

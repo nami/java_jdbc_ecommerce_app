@@ -13,16 +13,23 @@ public class platform_access {
     private Statement statement = null;
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
-
-    // connect objects
     private dbService DBService = null;
 
+    /**
+     *  Constructor to instantiate required service object
+     *  dbService required
+     */
     public platform_access(){
         DBService = new dbService();
     }
 
+    /**
+     * Method to take in User Input to create a platform in the DB
+     * Calls the method that creates a new platform in the DB
+     */
     public static void createPlatforms() {
 
+        // asks the user for platform name, url and service charge
         Scanner sc = new Scanner(System.in);
         System.out.println("新しいプラトフォムの名をご入力ください。");
         String name = sc.nextLine();
@@ -33,7 +40,7 @@ public class platform_access {
 
         platform_access demo = new platform_access();
 
-        // have a user write in a platform
+        // calls the new platform method
         try{
             demo.newPlatform(name, url, service);
         } catch(Exception e){
@@ -42,8 +49,14 @@ public class platform_access {
         }
     }
 
+    /**
+     * Method to take in user input to update a platform in the DB
+     * Calls the method to update platforms in the DB
+     */
     public static void upPlatforms(){
 
+        // asks the user for platform name, url and service charge
+        // asks the user to confirm platform name they would like to change
         Scanner sc = new Scanner(System.in);
         System.out.println("ご変更されたいプラトフォム名をご入力ください。");
         String platform = sc.nextLine();
@@ -56,7 +69,7 @@ public class platform_access {
 
         platform_access demo = new platform_access();
 
-        // have a user update a platform
+        // calls the method to update platform
         try{
             demo.updatePlatform(platform, update, service, name);
         } catch(Exception e){
@@ -65,7 +78,10 @@ public class platform_access {
         }
     }
 
-
+    /**
+     * Method to list all Platforms that exist in the DB to the console
+     * @throws Exception
+     */
     public void listPlatforms()
             throws Exception{
         try{
@@ -83,6 +99,7 @@ public class platform_access {
 
             System.out.println("----------------------------------------------------");
 
+            // iterate over arrayList of platform objects and print them to the console
             for (platforms p : platforms){
                 System.out.println(p.toString());
             }
@@ -94,12 +111,19 @@ public class platform_access {
             System.out.println(e.getStackTrace());
             throw e;
         } finally {
+            // close the connections
             close();
         }
     }
 
 
-    // create the new platform
+    /**
+     * Method that creates a new platform in DB
+     * @param name
+     * @param url
+     * @param sales_fee
+     * @throws Exception
+     */
     public void newPlatform(String name, String url, int sales_fee)
             throws Exception{
         try{
@@ -110,23 +134,25 @@ public class platform_access {
             statement = DBService.getStatement();
 
             //PreparedStatements can be reused
-            // Insert elements into the tables
+            // create a preparedStatement to use for INSERT
             preparedStatement = connection
                     .prepareStatement("insert into ECommerce.platforms (name, url, sales_fee) " +
                             "values (?, ?, ?)");
 
-            // Parameters start with 1
+            // replace question marks in preparedStatement with values from user
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, url);
             preparedStatement.setInt(3, sales_fee);
             preparedStatement.executeUpdate();
 
-            // print out products to see the addition
+            // select all platforms fro DB to see the addition of a new platform
             preparedStatement = connection
                     .prepareStatement("SELECT * from ECommerce.platforms");
 
+            // execute the insert statement against the DB
             resultSet = preparedStatement.executeQuery();
 
+            // print the results to the console for user
             writeResultSet(resultSet);
 
             System.out.println("----------------------------------------------------");
@@ -135,15 +161,21 @@ public class platform_access {
             System.out.println("newPlatform()のエラー" + e.getMessage());
             System.out.println(e.getStackTrace());
             throw e;
+
         } finally {
+            // close the connection
             close();
         }
     }
 
-    // delete platform
+    /**
+     * Method that deletes platform in DB by name.
+     * @throws Exception
+     */
     public void deletePlatform()
             throws Exception{
         try{
+            // takes in user input to the name of the platform they wish to delete
             Scanner sc = new Scanner(System.in);
             System.out.println("削除されたいプラトフォム名をご入力ください。？");
             String name = sc.nextLine();
@@ -154,19 +186,24 @@ public class platform_access {
             // statement allows to issue SQL queries to the database
             statement = DBService.getStatement();
 
-            // delete any product in DB
+            // instantiate prepared statement to use for DELETE query
             preparedStatement = connection
                     .prepareStatement("delete from ECommerce.platforms where name = ?; ");
 
+            // replace question marks in prepared statement with values we got from user
             preparedStatement.setString(1, name);
 
+            // execute the delete statement against the db
             preparedStatement.executeUpdate();
 
+            // select all products fro DB to see the deletion of a new platform
             preparedStatement = connection
                     .prepareStatement("SELECT * from ECommerce.platforms");
 
+            // execute the delete statement against the db
             resultSet = preparedStatement.executeQuery();
 
+            // print the updated platform list to the console
             writeResultSet(resultSet);
 
             System.out.println("----------------------------------------------------");
@@ -176,11 +213,19 @@ public class platform_access {
             System.out.println(e.getStackTrace());
             throw e;
         } finally {
+            // close all connections
             close();
         }
     }
 
-    // update any platform in DB
+    /**
+     * Method that updates the platform in DB with user input
+     * @param name
+     * @param url
+     * @param service
+     * @param old_name
+     * @throws Exception
+     */
     public void updatePlatform(String name, String url, int service, String old_name)
             throws Exception{
         try{
@@ -190,24 +235,28 @@ public class platform_access {
             // statement allows to issue SQL queries to the database
             statement = DBService.getStatement();
 
-            // update any product in DB
+            // instantiate prepared statement to use for UPDATE query
             preparedStatement = connection
                     .prepareStatement("update ECommerce.platforms " +
                             "set name = ?, url = ?, sales_fee = ? where name = ?; ");
 
+            // replace question marks in prepared statement with values we got from user
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, url);
             preparedStatement.setInt(3, service);
             preparedStatement.setString(4, old_name);
 
+            // execute the update statement against the db
             preparedStatement.executeUpdate();
 
-            // print out products to see the update
+            // select all products fro DB to see the update of a new platform
             preparedStatement = connection
                     .prepareStatement("SELECT * from ECommerce.platforms");
 
+            // execute the update statement against the db
             resultSet = preparedStatement.executeQuery();
 
+            // print the updated platform list to the console
             writeResultSet(resultSet);
 
             System.out.println("----------------------------------------------------");
@@ -217,21 +266,27 @@ public class platform_access {
             System.out.println("Error in updateProduct()" + e.getMessage());
             System.out.println(e.getStackTrace());
         } finally {
+            // close all connections
             close();
         }
     }
 
-
+    /**
+     * Method that prints the values inside the DB to show user new changes
+     * @param resultSet - values to be printed
+     * @throws SQLException
+     */
     private void writeResultSet(ResultSet resultSet) throws SQLException{
         //ResultSet has to be written before the first data set
         while (resultSet.next()){
-            // write in columns from products obj
 
+            // retrieve the values from the columns in the DB
             int id = resultSet.getInt("id");
             String name = resultSet.getString("name");
             String url = resultSet.getString("url");
             int sales_fee = resultSet.getInt("sales_fee");
 
+            // print out the values to the console
             System.out.println("ID: " + id);
             System.out.println("製品名: " + name);
             System.out.println("URL: " + url);
@@ -241,19 +296,36 @@ public class platform_access {
         }
     }
 
+    /**
+     * Maps result set of DB to an array list
+     * @param resultSet
+     * @return ArrayList<platforms> - list of data as POJOs from the DB
+     * @throws SQLException
+     */
     private ArrayList<platforms> mapResultSetToObjects(ResultSet resultSet) throws SQLException{
 
+        //instantiate empty arraylist to put our products into
         ArrayList<platforms> retList = new ArrayList();
 
+        // while there are more results in the resultSet
+        // .next() returns the next row of data in the resultSet
         while (resultSet.next()){
+            // instantiate empty platforms object
             platforms pl = new platforms();
+
+            // set the platform object id from the resultSet column "id"
             pl.setId(resultSet.getInt("id"));
+            // set the platform name from the resultSet column "name"
             pl.setName(resultSet.getString("name"));
+            // set the platform url from the resultSet column "url"
             pl.setUrl(resultSet.getString("url"));
+            // set the product sales fee from the resultSet column "sales_fee"
             pl.setSales_fee(resultSet.getInt("sales_fee"));
 
+            // add product object to the arraylist
             retList.add(pl);
         }
+        // return arraylist of product objects
         return retList;
     }
 
@@ -269,7 +341,7 @@ public class platform_access {
             }
 
             if(preparedStatement != null){
-                statement.close();
+                preparedStatement.close();
             }
 
             if(connection != null){

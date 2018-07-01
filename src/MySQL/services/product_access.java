@@ -7,21 +7,30 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class product_access {
-    // these four instance variables are needed for any MySQLconnection
+
+    // these five instance variables are needed for any MySQLconnection
     private Connection connection = null;
     private Statement statement = null;
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
 
-    // connect objects
+    // service objects for a connection
     private dbService DBService = null;
 
-    public product_access(){
+    /**
+     * Constructor to instantiate required service objects
+     */
+    public product_access() {
         DBService = new dbService();
     }
 
+    /**
+     * Method for user to input products they want to create in DB
+     * calls the new product method
+     */
     public static void createProducts() {
 
+        // asks user for new product name and description
         Scanner sc = new Scanner(System.in);
         System.out.println("新しい製品名をご入力ください。");
         String name = sc.nextLine();
@@ -30,17 +39,22 @@ public class product_access {
 
         product_access demo = new product_access();
 
-        // have a user write in a product
-        try{
+        // calls the new product method
+        try {
             demo.newProduct(name, desc);
-        } catch(Exception e){
+        } catch (Exception e) {
             System.out.println("createProducts()のエラー" + e.getMessage());
             System.out.println(e.getStackTrace());
         }
     }
 
-    public static void upProducts(){
+    /**
+     * Method for input product updates in DB
+     * calls the update product method
+     */
+    public static void upProducts() {
 
+        // asks user for modified product name, desc, and to confirm old product name
         Scanner sc = new Scanner(System.in);
         System.out.println("ご変更されたい製品名をご入力ください。");
         String product = sc.nextLine();
@@ -51,34 +65,39 @@ public class product_access {
 
         product_access demo = new product_access();
 
-        // have a user update a product
-        try{
+        // call the update product method
+        try {
             demo.updateProduct(product, update, name);
-        } catch(Exception e){
+        } catch (Exception e) {
             System.out.println("upProducts()のエラー" + e.getMessage());
             System.out.println(e.getStackTrace());
         }
     }
 
-
+    /**
+     * Method to list all products in DB
+     *
+     * @throws Exception
+     */
     public void listProducts()
-        throws Exception{
-        try{
+            throws Exception {
+        try {
             // call connection
             connection = DBService.getConnection();
 
             // statement allows to issue SQL queries to the database
             statement = DBService.getStatement();
 
-            // list all products in DB
+            // Result set will retrieve the result of the SQL query
             resultSet = statement.executeQuery("select * from ECommerce.products;");
 
-            //write resultSet to an array
+            // create arraylist of Product objects from resultSet
             ArrayList<products> products = mapResultSetToObjects(resultSet);
 
             System.out.println("----------------------------------------------------");
 
-            for (products p : products){
+            // iterate through arraylist and print each product to the console
+            for (products p : products) {
                 System.out.println(p.toString());
             }
 
@@ -89,38 +108,46 @@ public class product_access {
             System.out.println(e.getStackTrace());
             throw e;
         } finally {
+            // close connection
             close();
         }
     }
 
 
-    // create the new product
+    /**
+     * A method to create a new product
+     *
+     * @param p_name
+     * @param p_description
+     * @throws Exception
+     */
     public void newProduct(String p_name, String p_description)
-        throws Exception{
-        try{
+            throws Exception {
+        try {
             // call connection
             connection = DBService.getConnection();
 
             // statement allows to issue SQL queries to the database
             statement = DBService.getStatement();
 
-            //PreparedStatements can be reused
-            // Insert elements into the tables
+            // instantiate preparedStatement to use for INSERT query
             preparedStatement = connection
                     .prepareStatement("insert into ECommerce.products (p_name, p_description) " +
-                    "values (?, ?)");
+                            "values (?, ?)");
 
-            // Parameters start with 1
+            // replace question marks in the query above with values we got from the user
             preparedStatement.setString(1, p_name);
             preparedStatement.setString(2, p_description);
             preparedStatement.executeUpdate();
 
-            // print out products to see the addition
+            // instantiate preparedStatement to select all product from the DB
             preparedStatement = connection
                     .prepareStatement("SELECT * from ECommerce.products");
 
+            // execute the INSERT statement against the DB
             resultSet = preparedStatement.executeQuery();
 
+            // print to the console the update list of products
             writeResultSet(resultSet);
 
             System.out.println("----------------------------------------------------");
@@ -130,13 +157,20 @@ public class product_access {
             System.out.println(e.getStackTrace());
             throw e;
         } finally {
-          close();
+            // close connections
+            close();
         }
     }
 
+    /**
+     * A method for the user to delete a product in the DB by name
+     *
+     * @throws Exception
+     */
     public void deleteProduct()
-        throws Exception{
-        try{
+            throws Exception {
+        try {
+            // get product name from user to delete
             Scanner sc = new Scanner(System.in);
             System.out.println("削除されたい製品名をご入力ください。");
             String product = sc.nextLine();
@@ -147,19 +181,24 @@ public class product_access {
             // statement allows to issue SQL queries to the database
             statement = DBService.getStatement();
 
-            // delete any product in DB
+            // instantiate prepared statement to use for DELETE query
             preparedStatement = connection
                     .prepareStatement("delete from ECommerce.products where p_name = ?; ");
 
+            // replace question mark in query above with name we got from user
             preparedStatement.setString(1, product);
 
+            // execute DELETE statement against the DB
             preparedStatement.executeUpdate();
 
+            // instantiate preparedStatement to select all product from the DB
             preparedStatement = connection
                     .prepareStatement("SELECT * from ECommerce.products");
 
+            // get the new resultSet
             resultSet = preparedStatement.executeQuery();
 
+            // print the resultSet to the control so user can see new updates
             writeResultSet(resultSet);
 
             System.out.println("----------------------------------------------------");
@@ -169,37 +208,49 @@ public class product_access {
             System.out.println(e.getStackTrace());
             throw e;
         } finally {
+            // close connections
             close();
         }
     }
 
-    // update any product in DB
+    /**
+     * A method to update any product in the DB
+     *
+     * @param new_name
+     * @param p_description
+     * @param old_name
+     * @throws Exception
+     */
     public void updateProduct(String new_name, String p_description, String old_name)
-        throws Exception{
-        try{
+            throws Exception {
+        try {
             // call connection
             connection = DBService.getConnection();
 
             // statement allows to issue SQL queries to the database
             statement = DBService.getStatement();
 
-            // update any product in DB
+            // instantiate prepared statement to use for UPDATE query
             preparedStatement = connection
                     .prepareStatement("update ECommerce.products " +
                             "set p_name = ?, p_description = ? where p_name = ?; ");
 
+            // replace question mark in query above with values we got from user
             preparedStatement.setString(1, new_name);
             preparedStatement.setString(2, p_description);
             preparedStatement.setString(3, old_name);
 
+            // execute UPDATE statement against the DB
             preparedStatement.executeUpdate();
 
-            // print out products to see the update
+            // instantiate prepared statement to use for select all products query
             preparedStatement = connection
                     .prepareStatement("SELECT * from ECommerce.products");
 
+            // get the result set
             resultSet = preparedStatement.executeQuery();
 
+            // print the result set to the console for the user to see updates
             writeResultSet(resultSet);
 
             System.out.println("----------------------------------------------------");
@@ -209,20 +260,28 @@ public class product_access {
             System.out.println("updateProduct()のエラー" + e.getMessage());
             System.out.println(e.getStackTrace());
         } finally {
+            // close connections
             close();
         }
     }
 
-
-    private void writeResultSet(ResultSet resultSet) throws SQLException{
+    /**
+     * Method that prints the values inside the DB to show user new changes
+     *
+     * @param resultSet
+     * @throws SQLException
+     */
+    private void writeResultSet(ResultSet resultSet) throws SQLException {
         //ResultSet has to be written before the first data set
-        while (resultSet.next()){
+        while (resultSet.next()) {
             // write in columns from products obj
 
+            // retrieve the values from the columns in the DB
             int id = resultSet.getInt("id");
-           String p_name = resultSet.getString("p_name");
-           String p_description = resultSet.getString("p_description");
+            String p_name = resultSet.getString("p_name");
+            String p_description = resultSet.getString("p_description");
 
+            // print out the values to the console
             System.out.println("ID: " + id);
             System.out.println("製品名: " + p_name);
             System.out.println("製品内容: " + p_description);
@@ -231,41 +290,58 @@ public class product_access {
         }
     }
 
-    private ArrayList<products> mapResultSetToObjects(ResultSet resultSet) throws SQLException{
+    /**
+     * Maps result set of DB to an array list
+     *
+     * @param resultSet
+     * @return - ArrayList<products> - list of data as POJOs from the DB
+     * @throws SQLException
+     */
+    private ArrayList<products> mapResultSetToObjects(ResultSet resultSet) throws SQLException {
 
+        // instantiate empty arraylist to put our products into
         ArrayList<products> retList = new ArrayList();
 
-        while (resultSet.next()){
+        // while there are more results in the resultSet
+        // .next() returns the next row of data in the resultSet
+        while (resultSet.next()) {
+            // instantiate empty Product object
             products p = new products();
+
+            // set the platform object id from the resultSet column "id"
             p.setId(resultSet.getInt("id"));
+            // set the product name from the resultSet column "p_name"
             p.setP_name(resultSet.getString("p_name"));
+            // set the product description id from the resultSet column "p_description"
             p.setP_description(resultSet.getString("p_description"));
 
+            // add product object to the arraylist
             retList.add(p);
         }
+        // return arraylist of product objects
         return retList;
     }
 
-    //Close resultSet
-    private void close(){
+    //Close connections
+    private void close() {
         try {
-            if(resultSet != null){
+            if (resultSet != null) {
                 resultSet.close();
             }
 
-            if(statement != null){
+            if (statement != null) {
                 statement.close();
             }
 
-            if(preparedStatement != null){
-                statement.close();
+            if (preparedStatement != null) {
+                preparedStatement.close();
             }
 
-            if(connection != null){
+            if (connection != null) {
                 connection.close();
             }
 
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
