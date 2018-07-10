@@ -1,6 +1,6 @@
 package MySQL.model;
 
-public class records {
+public class Records {
 
     private int id;
     private int product_id;
@@ -41,7 +41,7 @@ public class records {
 
     @Override
     public String toString() {
-        return "prices_products_platforms_access{" +
+        return "Prices_products_platforms_access{" +
                 "id=" + id +
                 ", product_id=" + product_id +
                 ", platform_id=" + platform_id +

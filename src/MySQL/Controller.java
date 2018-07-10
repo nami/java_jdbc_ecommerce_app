@@ -1,19 +1,19 @@
 package MySQL;
 
-import MySQL.services.platform_access;
-import MySQL.services.prices_products_platforms_access;
-import MySQL.services.product_access;
+import MySQL.services.Platform_access;
+import MySQL.services.Prices_products_platforms_access;
+import MySQL.services.Product_access;
 
 import java.util.Scanner;
 
-public class controller {
+public class Controller {
 
     /**
      * main() to start ECommerce
      * @param args
      */
     public static void main(String[] args) {
-        controller c = new controller();
+        Controller c = new Controller();
         c.userMenu();
 
     }
@@ -28,9 +28,9 @@ public class controller {
         /**
          * Constructor to instantiate required service classes
          */
-        product_access p = new product_access();
-        platform_access pl = new platform_access();
-        prices_products_platforms_access ppp = new prices_products_platforms_access();
+        Product_access p = new Product_access();
+        Platform_access pl = new Platform_access();
+        Prices_products_platforms_access ppp = new Prices_products_platforms_access();
 
         /**
          * primary controller method for ECommerce application - uses do while loop to take commands from user based on
@@ -48,7 +48,7 @@ public class controller {
                         printMenu();
                         break;
                     case 1:
-                        product_access.createProducts();
+                        Product_access.createProducts();
                         System.out.println("新しい製品を作りました。");
                         System.out.println("メニューを表示には「０」を入力ください。");
                         break;
@@ -56,7 +56,7 @@ public class controller {
                         System.out.println("製品のリストを表示されました。");
                         System.out.println("メニューを表示には「０」を入力ください。");
                         break;
-                    case 3 : product_access.upProducts();
+                    case 3 : Product_access.upProducts();
                         System.out.println("製品を更新されました。");
                         System.out.println("メニューを表示には「０」を入力ください。");
                         break;
@@ -65,7 +65,7 @@ public class controller {
                         System.out.println("メニューを表示には「０」を入力ください。");
                         break;
                     case 5 :
-                        platform_access.createPlatforms();
+                        Platform_access.createPlatforms();
                         System.out.println("新しいプラトフォムを作りした。");
                         System.out.println("メニューを表示には「０」を入力ください。");
                         break;
@@ -73,7 +73,7 @@ public class controller {
                         System.out.println("プラトフォムを表示されました。");
                         System.out.println("メニューを表示には「０」を入力ください。");
                         break;
-                    case 7 : platform_access.upPlatforms();
+                    case 7 : Platform_access.upPlatforms();
                         System.out.println("プラトフォムを変更されました。");
                         System.out.println("メニューを表示には「０」を入力ください。");
                         break;

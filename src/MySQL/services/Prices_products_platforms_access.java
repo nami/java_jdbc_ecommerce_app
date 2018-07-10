@@ -1,12 +1,12 @@
 package MySQL.services;
 
-import MySQL.model.records;
+import MySQL.model.Records;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class prices_products_platforms_access {
+public class Prices_products_platforms_access {
 
     // these four instance variables are needed for any MySQLconnection
     private Connection connection = null;
@@ -20,7 +20,7 @@ public class prices_products_platforms_access {
     /**
      * Constructor to instantiate required service objects
      */
-    public prices_products_platforms_access(){
+    public Prices_products_platforms_access(){
         DBService = new dbService();
     }
 
@@ -39,7 +39,7 @@ public class prices_products_platforms_access {
         System.out.println("ご値段をご入力ください。");
         int prices = sc.nextInt();
 
-        prices_products_platforms_access demo = new prices_products_platforms_access();
+        Prices_products_platforms_access demo = new Prices_products_platforms_access();
 
         // calls the createRecord method
         try{
@@ -67,7 +67,7 @@ public class prices_products_platforms_access {
         System.out.println("製品のIDをご確認ください。");
         int p_id = sc.nextInt();
 
-        prices_products_platforms_access demo = new prices_products_platforms_access();
+        Prices_products_platforms_access demo = new Prices_products_platforms_access();
 
         // call the update record method
         try{
@@ -80,7 +80,7 @@ public class prices_products_platforms_access {
 
 
     /**
-     * A method that lists all records in the DB
+     * A method that lists all Records in the DB
      * @throws Exception
      */
     public void listRecords()
@@ -96,12 +96,12 @@ public class prices_products_platforms_access {
             resultSet = statement.executeQuery("select * from ECommerce.prices_products_platforms;");
 
             // create arraylist of reccords objects from resultSet
-            ArrayList<records> records = mapResultSetToObjects(resultSet);
+            ArrayList<Records> Records = mapResultSetToObjects(resultSet);
 
             System.out.println("----------------------------------------------------");
 
             // // iterate through arraylist and print each record to the console
-            for (records p : records){
+            for (Records p : Records){
                 System.out.println(p.toString());
             }
 
@@ -169,7 +169,7 @@ public class prices_products_platforms_access {
     }
 
     /**
-     * A method to delete records by OD
+     * A method to delete Records by OD
      * @throws Exception
      */
     public void deleteRecord()
@@ -219,7 +219,7 @@ public class prices_products_platforms_access {
     }
 
     /**
-     * A method to update records in the DB
+     * A method to update Records in the DB
      * @param product_id
      * @param platform_id
      * @param prices
@@ -256,7 +256,7 @@ public class prices_products_platforms_access {
             // write new record list to result set
             resultSet = preparedStatement.executeQuery();
 
-            // print new records list to console
+            // print new Records list to console
             writeResultSet(resultSet);
 
             System.out.println("----------------------------------------------------");
@@ -280,7 +280,7 @@ public class prices_products_platforms_access {
     private void writeResultSet(ResultSet resultSet) throws SQLException{
         //ResultSet has to be written before the first data set
         while (resultSet.next()){
-            // write in columns from products obj
+            // write in columns from Products obj
 
             // retrieve the values from the columns in the DB
             int id = resultSet.getInt("id");
@@ -299,21 +299,21 @@ public class prices_products_platforms_access {
     }
 
     /**
-     * A method to map the rows of data in a resultSet onto an arraylist of records objects (POJOs)
+     * A method to map the rows of data in a resultSet onto an arraylist of Records objects (POJOs)
      * @param resultSet
-     * @return ArrayList<records> list of data as POJOs from the DB
+     * @return ArrayList<Records> list of data as POJOs from the DB
      * @throws SQLException
      */
-    private ArrayList<records> mapResultSetToObjects(ResultSet resultSet) throws SQLException{
+    private ArrayList<Records> mapResultSetToObjects(ResultSet resultSet) throws SQLException{
 
-        // instantiate empty arraylist to put our products into
-        ArrayList<records> retList = new ArrayList();
+        // instantiate empty arraylist to put our Products into
+        ArrayList<Records> retList = new ArrayList();
 
         // while there are more results in the resultSet
         // .next() returns the next row of data in the resultSet
         while (resultSet.next()){
             // instantiate empty Product object
-            records pl = new records();
+            Records pl = new Records();
 
             // set the platform object id from the resultSet column "id"
             pl.setId(resultSet.getInt("id"));

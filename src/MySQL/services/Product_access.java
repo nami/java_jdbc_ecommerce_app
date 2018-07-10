@@ -1,12 +1,12 @@
 package MySQL.services;
 
-import MySQL.model.products;
+import MySQL.model.Products;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class product_access {
+public class Product_access {
 
     // these five instance variables are needed for any MySQLconnection
     private Connection connection = null;
@@ -20,12 +20,12 @@ public class product_access {
     /**
      * Constructor to instantiate required service objects
      */
-    public product_access() {
+    public Product_access() {
         DBService = new dbService();
     }
 
     /**
-     * Method for user to input products they want to create in DB
+     * Method for user to input Products they want to create in DB
      * calls the new product method
      */
     public static void createProducts() {
@@ -37,7 +37,7 @@ public class product_access {
         System.out.println("新しい製品内容をご入力ください。");
         String desc = sc.nextLine();
 
-        product_access demo = new product_access();
+        Product_access demo = new Product_access();
 
         // calls the new product method
         try {
@@ -63,7 +63,7 @@ public class product_access {
         System.out.println("ご変更させたい製品名をご入力ください。");
         String name = sc.nextLine();
 
-        product_access demo = new product_access();
+        Product_access demo = new Product_access();
 
         // call the update product method
         try {
@@ -75,7 +75,7 @@ public class product_access {
     }
 
     /**
-     * Method to list all products in DB
+     * Method to list all Products in DB
      *
      * @throws Exception
      */
@@ -89,15 +89,15 @@ public class product_access {
             statement = DBService.getStatement();
 
             // Result set will retrieve the result of the SQL query
-            resultSet = statement.executeQuery("select * from ECommerce.products;");
+            resultSet = statement.executeQuery("select * from ECommerce.Products;");
 
             // create arraylist of Product objects from resultSet
-            ArrayList<products> products = mapResultSetToObjects(resultSet);
+            ArrayList<Products> Products = mapResultSetToObjects(resultSet);
 
             System.out.println("----------------------------------------------------");
 
             // iterate through arraylist and print each product to the console
-            for (products p : products) {
+            for (Products p : Products) {
                 System.out.println(p.toString());
             }
 
@@ -132,7 +132,7 @@ public class product_access {
 
             // instantiate preparedStatement to use for INSERT query
             preparedStatement = connection
-                    .prepareStatement("insert into ECommerce.products (p_name, p_description) " +
+                    .prepareStatement("insert into ECommerce.Products (p_name, p_description) " +
                             "values (?, ?)");
 
             // replace question marks in the query above with values we got from the user
@@ -142,12 +142,12 @@ public class product_access {
 
             // instantiate preparedStatement to select all product from the DB
             preparedStatement = connection
-                    .prepareStatement("SELECT * from ECommerce.products");
+                    .prepareStatement("SELECT * from ECommerce.Products");
 
             // execute the INSERT statement against the DB
             resultSet = preparedStatement.executeQuery();
 
-            // print to the console the update list of products
+            // print to the console the update list of Products
             writeResultSet(resultSet);
 
             System.out.println("----------------------------------------------------");
@@ -183,7 +183,7 @@ public class product_access {
 
             // instantiate prepared statement to use for DELETE query
             preparedStatement = connection
-                    .prepareStatement("delete from ECommerce.products where p_name = ?; ");
+                    .prepareStatement("delete from ECommerce.Products where p_name = ?; ");
 
             // replace question mark in query above with name we got from user
             preparedStatement.setString(1, product);
@@ -193,7 +193,7 @@ public class product_access {
 
             // instantiate preparedStatement to select all product from the DB
             preparedStatement = connection
-                    .prepareStatement("SELECT * from ECommerce.products");
+                    .prepareStatement("SELECT * from ECommerce.Products");
 
             // get the new resultSet
             resultSet = preparedStatement.executeQuery();
@@ -232,7 +232,7 @@ public class product_access {
 
             // instantiate prepared statement to use for UPDATE query
             preparedStatement = connection
-                    .prepareStatement("update ECommerce.products " +
+                    .prepareStatement("update ECommerce.Products " +
                             "set p_name = ?, p_description = ? where p_name = ?; ");
 
             // replace question mark in query above with values we got from user
@@ -243,9 +243,9 @@ public class product_access {
             // execute UPDATE statement against the DB
             preparedStatement.executeUpdate();
 
-            // instantiate prepared statement to use for select all products query
+            // instantiate prepared statement to use for select all Products query
             preparedStatement = connection
-                    .prepareStatement("SELECT * from ECommerce.products");
+                    .prepareStatement("SELECT * from ECommerce.Products");
 
             // get the result set
             resultSet = preparedStatement.executeQuery();
@@ -274,7 +274,7 @@ public class product_access {
     private void writeResultSet(ResultSet resultSet) throws SQLException {
         //ResultSet has to be written before the first data set
         while (resultSet.next()) {
-            // write in columns from products obj
+            // write in columns from Products obj
 
             // retrieve the values from the columns in the DB
             int id = resultSet.getInt("id");
@@ -294,19 +294,19 @@ public class product_access {
      * Maps result set of DB to an array list
      *
      * @param resultSet
-     * @return - ArrayList<products> - list of data as POJOs from the DB
+     * @return - ArrayList<Products> - list of data as POJOs from the DB
      * @throws SQLException
      */
-    private ArrayList<products> mapResultSetToObjects(ResultSet resultSet) throws SQLException {
+    private ArrayList<Products> mapResultSetToObjects(ResultSet resultSet) throws SQLException {
 
-        // instantiate empty arraylist to put our products into
-        ArrayList<products> retList = new ArrayList();
+        // instantiate empty arraylist to put our Products into
+        ArrayList<Products> retList = new ArrayList();
 
         // while there are more results in the resultSet
         // .next() returns the next row of data in the resultSet
         while (resultSet.next()) {
             // instantiate empty Product object
-            products p = new products();
+            Products p = new Products();
 
             // set the platform object id from the resultSet column "id"
             p.setId(resultSet.getInt("id"));

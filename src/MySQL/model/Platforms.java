@@ -1,6 +1,6 @@
 package MySQL.model;
 
-public class platforms {
+public class Platforms {
 
     private int id;
     private String name;
@@ -41,7 +41,7 @@ public class platforms {
 
     @Override
     public String toString() {
-        return "platforms{" +
+        return "Platforms{" +
                 "name='" + name + '\'' +
                 ", url='" + url + '\'' +
                 ", sales_fee=" + sales_fee +

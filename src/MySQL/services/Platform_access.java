@@ -1,12 +1,12 @@
 package MySQL.services;
 
-import MySQL.model.platforms;
+import MySQL.model.Platforms;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class platform_access {
+public class Platform_access {
 
     // these four instance variables are needed for any MySQLconnection
     private Connection connection = null;
@@ -19,7 +19,7 @@ public class platform_access {
      *  Constructor to instantiate required service object
      *  dbService required
      */
-    public platform_access(){
+    public Platform_access(){
         DBService = new dbService();
     }
 
@@ -38,7 +38,7 @@ public class platform_access {
         System.out.println("新しいサービス料金をご入力ください。");
         int service = sc.nextInt();
 
-        platform_access demo = new platform_access();
+        Platform_access demo = new Platform_access();
 
         // calls the new platform method
         try{
@@ -51,7 +51,7 @@ public class platform_access {
 
     /**
      * Method to take in user input to update a platform in the DB
-     * Calls the method to update platforms in the DB
+     * Calls the method to update Platforms in the DB
      */
     public static void upPlatforms(){
 
@@ -67,7 +67,7 @@ public class platform_access {
         System.out.println("ご変更させたいプラトフォム名をご入力ください。");
         String name = sc.next();
 
-        platform_access demo = new platform_access();
+        Platform_access demo = new Platform_access();
 
         // calls the method to update platform
         try{
@@ -91,16 +91,16 @@ public class platform_access {
             // statement allows to issue SQL queries to the database
             statement = DBService.getStatement();
 
-            // list all products in DB
-            resultSet = statement.executeQuery("select * from ECommerce.platforms;");
+            // list all Products in DB
+            resultSet = statement.executeQuery("select * from ECommerce.Platforms;");
 
             //write resultSet to an array
-            ArrayList<platforms> platforms = mapResultSetToObjects(resultSet);
+            ArrayList<Platforms> Platforms = mapResultSetToObjects(resultSet);
 
             System.out.println("----------------------------------------------------");
 
             // iterate over arrayList of platform objects and print them to the console
-            for (platforms p : platforms){
+            for (Platforms p : Platforms){
                 System.out.println(p.toString());
             }
 
@@ -136,7 +136,7 @@ public class platform_access {
             //PreparedStatements can be reused
             // create a preparedStatement to use for INSERT
             preparedStatement = connection
-                    .prepareStatement("insert into ECommerce.platforms (name, url, sales_fee) " +
+                    .prepareStatement("insert into ECommerce.Platforms (name, url, sales_fee) " +
                             "values (?, ?, ?)");
 
             // replace question marks in preparedStatement with values from user
@@ -145,9 +145,9 @@ public class platform_access {
             preparedStatement.setInt(3, sales_fee);
             preparedStatement.executeUpdate();
 
-            // select all platforms fro DB to see the addition of a new platform
+            // select all Platforms fro DB to see the addition of a new platform
             preparedStatement = connection
-                    .prepareStatement("SELECT * from ECommerce.platforms");
+                    .prepareStatement("SELECT * from ECommerce.Platforms");
 
             // execute the insert statement against the DB
             resultSet = preparedStatement.executeQuery();
@@ -188,7 +188,7 @@ public class platform_access {
 
             // instantiate prepared statement to use for DELETE query
             preparedStatement = connection
-                    .prepareStatement("delete from ECommerce.platforms where name = ?; ");
+                    .prepareStatement("delete from ECommerce.Platforms where name = ?; ");
 
             // replace question marks in prepared statement with values we got from user
             preparedStatement.setString(1, name);
@@ -196,9 +196,9 @@ public class platform_access {
             // execute the delete statement against the db
             preparedStatement.executeUpdate();
 
-            // select all products fro DB to see the deletion of a new platform
+            // select all Products fro DB to see the deletion of a new platform
             preparedStatement = connection
-                    .prepareStatement("SELECT * from ECommerce.platforms");
+                    .prepareStatement("SELECT * from ECommerce.Platforms");
 
             // execute the delete statement against the db
             resultSet = preparedStatement.executeQuery();
@@ -237,7 +237,7 @@ public class platform_access {
 
             // instantiate prepared statement to use for UPDATE query
             preparedStatement = connection
-                    .prepareStatement("update ECommerce.platforms " +
+                    .prepareStatement("update ECommerce.Platforms " +
                             "set name = ?, url = ?, sales_fee = ? where name = ?; ");
 
             // replace question marks in prepared statement with values we got from user
@@ -249,9 +249,9 @@ public class platform_access {
             // execute the update statement against the db
             preparedStatement.executeUpdate();
 
-            // select all products fro DB to see the update of a new platform
+            // select all Products fro DB to see the update of a new platform
             preparedStatement = connection
-                    .prepareStatement("SELECT * from ECommerce.platforms");
+                    .prepareStatement("SELECT * from ECommerce.Platforms");
 
             // execute the update statement against the db
             resultSet = preparedStatement.executeQuery();
@@ -299,19 +299,19 @@ public class platform_access {
     /**
      * Maps result set of DB to an array list
      * @param resultSet
-     * @return ArrayList<platforms> - list of data as POJOs from the DB
+     * @return ArrayList<Platforms> - list of data as POJOs from the DB
      * @throws SQLException
      */
-    private ArrayList<platforms> mapResultSetToObjects(ResultSet resultSet) throws SQLException{
+    private ArrayList<Platforms> mapResultSetToObjects(ResultSet resultSet) throws SQLException{
 
-        //instantiate empty arraylist to put our products into
-        ArrayList<platforms> retList = new ArrayList();
+        //instantiate empty arraylist to put our Products into
+        ArrayList<Platforms> retList = new ArrayList();
 
         // while there are more results in the resultSet
         // .next() returns the next row of data in the resultSet
         while (resultSet.next()){
-            // instantiate empty platforms object
-            platforms pl = new platforms();
+            // instantiate empty Platforms object
+            Platforms pl = new Platforms();
 
             // set the platform object id from the resultSet column "id"
             pl.setId(resultSet.getInt("id"));

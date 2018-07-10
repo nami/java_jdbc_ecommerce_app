@@ -1,6 +1,6 @@
 package MySQL.model;
 
-public class products {
+public class Products {
 
     private String p_name;
     private String p_description;
@@ -32,7 +32,7 @@ public class products {
 
     @Override
     public String toString() {
-        return "products{" +
+        return "Products{" +
                 "p_name='" + p_name + '\'' +
                 ", p_description='" + p_description + '\'' +
                 ", id=" + id +
